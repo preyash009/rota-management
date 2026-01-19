@@ -17,7 +17,16 @@ class StoreShiftRequest extends FormRequest
             'title' => 'required|string',
             'date' => 'required|date|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
+            'end_time' => [
+                'required',
+                'date_format:H:i',
+                function ($attribute, $value, $fail) {
+                    $startTime = $this->input('start_time');
+                    if ($startTime && $value !== '00:00' && $value <= $startTime) {
+                        $fail('The end time must be after the start time or 00:00 for overnight shifts.');
+                    }
+                }
+            ],
             'status' => 'required|in:Scheduled,Completed,Cancelled'
         ];
     }

@@ -30,7 +30,8 @@ class Shift extends Model
             $end->addDay();
         }
         
-        return $start->diffInHours($end, true);
+        $duration = $start->diffInHours($end, true);
+        return $duration == (int)$duration ? (int)$duration : number_format($duration, 2);
     }
 
     public function assignments()
